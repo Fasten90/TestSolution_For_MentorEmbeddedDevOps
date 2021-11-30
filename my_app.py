@@ -5,15 +5,24 @@ def connect_to_db():
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="secret"
+        password="secret",
+        database="employee-db"
     )
     return mydb
 
 
 def queries_the_mysql_database_for_employees_working_in_the_Production_deparment_earning_more_than_100(mydb):
-    # TODO: mydb
-    print(mydb)
-    pass
+    cursor = mydb.cursor()
+
+    cursor.execute("SELECT * FROM employees")
+
+    result = cursor.fetchall()
+
+    for x in result:
+        print(x)
+
+    return result
+
 
 
 def my_app():
