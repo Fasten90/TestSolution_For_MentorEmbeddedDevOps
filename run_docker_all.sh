@@ -26,8 +26,9 @@ docker run -d \
 docker stop myapp_container
 docker stop mysql-test
 docker stop rest-api-test
+docker rm myapp_container
 docker rm mysql-test
 docker rm rest-api-test
 
-docker network rm  bridge isolated
+docker network rm isolated
 
