@@ -17,11 +17,11 @@ def queries_the_mysql_database_for_employees_working_in_the_Production_deparment
     cursor = mydb.cursor()
 
     cursor.execute("""
-    SELECT employees.id, employees.name, employees.birth_date, departments.department, salaries.salary
+    SELECT employees.id, employees.name, employees.birth_date, departments.department, salaries.salary, departments.to_date
     FROM employees
         INNER JOIN departments ON employees.id = departments.empl_id
         INNER JOIN salaries ON employees.id = salaries.empl_id
-    WHERE salaries.salary > 100
+    WHERE salaries.salary > 100 AND departments.department = 'Production' AND departments.to_date IS NULL
     ;
     """)
 
