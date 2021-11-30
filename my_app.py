@@ -1,4 +1,5 @@
 import mysql.connector
+import requests
 
 
 def connect_to_db():
@@ -31,11 +32,30 @@ def queries_the_mysql_database_for_employees_working_in_the_Production_deparment
     return result
 
 
+def get_rest_api_users():
+    response = requests.get('http://localhost:80/v1/users')
+    users = response.json()
+    for x in users:
+        print(x)
+    return users
+
+
+
+def get_access_rights():
+    # query = {'lat': '45', 'lon': '180'}
+    #response = requests.get('http://api.open-notify.org/iss-pass.json', params=query)
+    #print(response.json())
+    pass
+
 
 def my_app():
     mydb = connect_to_db()
+    print('Exec MySQL')
     result = queries_the_mysql_database_for_employees_working_in_the_Production_deparment_earning_more_than_100(mydb)
-    print(result)
+    #print(result)
+    print('Exec Rest-api users')
+    users = get_rest_api_users()
+
 
 
 if __name__ == '__main__':
