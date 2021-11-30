@@ -46,25 +46,34 @@ def get_access_rights(username):
     param = {'username': username}
     response = requests.get('http://localhost:80/v1/accesslevels', params=param)
     access_right = response.json()
-    return access_right
+    return access_right['access']
 
 
 def find_valid_users_and_get_access_rights(sql_result, users):
     user_with_access_rights = []
     for sql_row in sql_result:
         sql_name = sql_row[1]  # TODO: More beautiful solution at mysql query
+        birthday = sql_row[2].strftime("%Y-%m-%d %H:%M:%S")
         # Finding in the user list
+        username = 'N/A'
         for user_item in users:
             if sql_name == user_item['name']:
-                username = user_item['username']
-                access_right = get_access_rights(username)
+                rest_api_username = user_item['username']
+                access_right = get_access_rights(rest_api_username)
                 # Check right
-                if access_right == 'WRITE':
-                    user_with_access_rights.append({'username': username, 'access_right': access_right})
+                if 'WRITE' in access_right:
+                    username = rest_api_username
+                else:
+                    username = 'N/A'  # Does not needed, but more beautiful
                 # else: Incorrect access right
+        user_with_access_rights.append({'Name': sql_name, 'Birthday': birthday, 'Username': username})
         # If it is not find in users: maybe he has not registered to rest-api server
     return user_with_access_rights
 
+
+def export_to_csv(user_list_with_info):
+    for x in user_list_with_info:
+        print(x)
 
 
 def my_app():
@@ -74,8 +83,8 @@ def my_app():
     #print(result)
     print('Exec Rest-api users')
     users = get_rest_api_users()
-    find_valid_users_and_get_access_rights(sql_result, users)
-
+    user_list_with_info = find_valid_users_and_get_access_rights(sql_result, users)
+    export_to_csv(user_list_with_info)
 
 
 if __name__ == '__main__':
