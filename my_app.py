@@ -14,7 +14,13 @@ def connect_to_db():
 def queries_the_mysql_database_for_employees_working_in_the_Production_deparment_earning_more_than_100(mydb):
     cursor = mydb.cursor()
 
-    cursor.execute("SELECT * FROM employees")
+    cursor.execute("""
+    SELECT employees.id, employees.name, employees.birth_date, departments.department, salaries.salary
+    FROM employees
+        INNER JOIN departments ON employees.id = departments.empl_id
+        INNER JOIN salaries ON employees.id = salaries.empl_id
+    ;
+    """)
 
     result = cursor.fetchall()
 
