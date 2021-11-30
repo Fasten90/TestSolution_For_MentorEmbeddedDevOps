@@ -41,20 +41,40 @@ def get_rest_api_users():
 
 
 
-def get_access_rights():
+def get_access_rights(username):
     # query = {'lat': '45', 'lon': '180'}
-    #response = requests.get('http://api.open-notify.org/iss-pass.json', params=query)
-    #print(response.json())
-    pass
+    param = {'username': username}
+    response = requests.get('http://localhost:80/v1/accesslevels', params=param)
+    access_right = response.json()
+    return access_right
+
+
+def find_valid_users_and_get_access_rights(sql_result, users):
+    user_with_access_rights = []
+    for sql_row in sql_result:
+        sql_name = sql_row[1]  # TODO: More beautiful solution at mysql query
+        # Finding in the user list
+        for user_item in users:
+            if sql_name == user_item['name']:
+                username = user_item['username']
+                access_right = get_access_rights(username)
+                # Check right
+                if access_right == 'WRITE':
+                    user_with_access_rights.append({'username': username, 'access_right': access_right})
+                # else: Incorrect access right
+        # If it is not find in users: maybe he has not registered to rest-api server
+    return user_with_access_rights
+
 
 
 def my_app():
     mydb = connect_to_db()
     print('Exec MySQL')
-    result = queries_the_mysql_database_for_employees_working_in_the_Production_deparment_earning_more_than_100(mydb)
+    sql_result = queries_the_mysql_database_for_employees_working_in_the_Production_deparment_earning_more_than_100(mydb)
     #print(result)
     print('Exec Rest-api users')
     users = get_rest_api_users()
+    find_valid_users_and_get_access_rights(sql_result, users)
 
 
 
