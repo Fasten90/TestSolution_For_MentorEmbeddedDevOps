@@ -1,5 +1,6 @@
 import mysql.connector
 import requests
+import csv
 
 
 def connect_to_db():
@@ -72,8 +73,16 @@ def find_valid_users_and_get_access_rights(sql_result, users):
 
 
 def export_to_csv(user_list_with_info):
-    for x in user_list_with_info:
-        print(x)
+    with open('exported_users.csv', 'w', newline='') as f:
+        # create the csv writer
+        fieldnames = 'Name', 'Birthday', 'Username'
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(user_list_with_info)
+
+    # Only debug print
+    for row in user_list_with_info:
+        print(row)
 
 
 def my_app():
