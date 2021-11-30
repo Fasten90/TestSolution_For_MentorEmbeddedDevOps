@@ -19,6 +19,7 @@ def queries_the_mysql_database_for_employees_working_in_the_Production_deparment
     FROM employees
         INNER JOIN departments ON employees.id = departments.empl_id
         INNER JOIN salaries ON employees.id = salaries.empl_id
+    WHERE salaries.salary > 100
     ;
     """)
 
