@@ -3,9 +3,13 @@ import requests
 import csv
 
 
+rest_api_server_name = 'rest-api-test'  # localhost
+mysql_server_name = 'mysql-test'  # TODO: 'localhost' (now, that is the mysql container name)
+
+
 def connect_to_db():
     mydb = mysql.connector.connect(
-        host="localhost",
+        host=mysql_server_name, 
         user="root",
         password="secret",
         database="employee-db"
@@ -34,7 +38,7 @@ def queries_the_mysql_database_for_employees_working_in_the_Production_deparment
 
 
 def get_rest_api_users():
-    response = requests.get('http://localhost:80/v1/users')
+    response = requests.get(f'http://{rest_api_server_name}:5000/v1/users')
     users = response.json()
     for x in users:
         print(x)
@@ -45,7 +49,7 @@ def get_rest_api_users():
 def get_access_rights(username):
     # query = {'lat': '45', 'lon': '180'}
     param = {'username': username}
-    response = requests.get('http://localhost:80/v1/accesslevels', params=param)
+    response = requests.get(f'http://{rest_api_server_name}:5000/v1/accesslevels', params=param)
     access_right = response.json()
     return access_right['access']
 
